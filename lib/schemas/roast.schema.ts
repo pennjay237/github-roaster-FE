@@ -1,0 +1,36 @@
+import { z } from 'zod';
+import { VALIDATION_CONSTANTS } from '../constants/validation.constants';
+
+export const roastSchema = z.object({
+  username: z
+    .string()
+    .min(VALIDATION_CONSTANTS.GITHUB_USERNAME.MIN_LENGTH, {
+      message: VALIDATION_CONSTANTS.GITHUB_USERNAME.ERROR_MESSAGES.REQUIRED,
+    })
+    .max(VALIDATION_CONSTANTS.GITHUB_USERNAME.MAX_LENGTH, {
+      message: VALIDATION_CONSTANTS.GITHUB_USERNAME.ERROR_MESSAGES.TOO_LONG,
+    })
+    .regex(VALIDATION_CONSTANTS.GITHUB_USERNAME.PATTERN, {
+      message: VALIDATION_CONSTANTS.GITHUB_USERNAME.ERROR_MESSAGES.INVALID,
+    })
+    .trim(),
+  
+  temperature: z
+    .number()
+    .min(VALIDATION_CONSTANTS.TEMPERATURE.MIN, {
+      message: VALIDATION_CONSTANTS.TEMPERATURE.ERROR_MESSAGES.INVALID,
+    })
+    .max(VALIDATION_CONSTANTS.TEMPERATURE.MAX, {
+      message: VALIDATION_CONSTANTS.TEMPERATURE.ERROR_MESSAGES.INVALID,
+    })
+    .default(VALIDATION_CONSTANTS.TEMPERATURE.DEFAULT),
+  
+  customInstructions: z
+    .string()
+    .max(VALIDATION_CONSTANTS.CUSTOM_INSTRUCTIONS.MAX_LENGTH, {
+      message: VALIDATION_CONSTANTS.CUSTOM_INSTRUCTIONS.ERROR_MESSAGES.TOO_LONG,
+    })
+    .optional(),
+});
+
+export type RoastSchema = z.infer<typeof roastSchema>;
