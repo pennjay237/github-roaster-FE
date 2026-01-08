@@ -1,7 +1,7 @@
 import { VALIDATION_CONSTANTS } from '../constants/validation.constants';
 
 export function isValidGitHubUsername(username: string): boolean {
-  return VALIDATION_CONSTANTS.GITHUB_USERNAME.PATTERN.test(username);
+  return VALIDATION_CONSTANTS.GITHUB_USERNAME.PATTERN.test(username.trim());
 }
 
 export function validateTemperature(temperature: number): {
@@ -15,6 +15,15 @@ export function validateTemperature(temperature: number): {
       error: VALIDATION_CONSTANTS.TEMPERATURE.ERROR_MESSAGES.INVALID,
     };
   }
+  
+  // Gemini AI specific validation - temperature must be between 0.0 and 1.0
+  if (isNaN(temperature)) {
+    return {
+      isValid: false,
+      error: 'Temperature must be a valid number',
+    };
+  }
+  
   return { isValid: true };
 }
 
@@ -29,14 +38,16 @@ export function validateUsername(username: string): {
     };
   }
 
-  if (username.length > VALIDATION_CONSTANTS.GITHUB_USERNAME.MAX_LENGTH) {
+  const trimmedUsername = username.trim();
+  
+  if (trimmedUsername.length > VALIDATION_CONSTANTS.GITHUB_USERNAME.MAX_LENGTH) {
     return {
       isValid: false,
       error: VALIDATION_CONSTANTS.GITHUB_USERNAME.ERROR_MESSAGES.TOO_LONG,
     };
   }
 
-  if (!isValidGitHubUsername(username)) {
+  if (!isValidGitHubUsername(trimmedUsername)) {
     return {
       isValid: false,
       error: VALIDATION_CONSTANTS.GITHUB_USERNAME.ERROR_MESSAGES.INVALID,
@@ -51,4 +62,30 @@ export function sanitizeInput(input: string): string {
     .trim()
     .replace(/[<>]/g, '')
     .substring(0, 500);
+}
+
+export function validateCustomInstructions(instructions: string): {
+  isValid: boolean;
+  error?: string;
+} {
+  if (!instructions || instructions.trim().length === 0) {
+    return { isValid: true };
+  }
+
+  if (instructions.length > VALIDATION_CONSTANTS.CUSTOM_INSTRUCTIONS.MAX_LENGTH) {
+    return {
+      isValid: false,
+      error: VALIDATION_CONSTANTS.CUSTOM_INSTRUCTIONS.ERROR_MESSAGES.TOO_LONG,
+    };
+  }
+
+  return { isValid: true };
+}
+
+export function getDefaultTemperature(): number {
+  return VALIDATION_CONSTANTS.TEMPERATURE.DEFAULT;
+}
+
+export function formatTemperature(temperature: number): string {
+  return temperature.toFixed(1);
 }

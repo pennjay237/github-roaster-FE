@@ -18,9 +18,21 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'GitHub Roast AI | AI-Powered Developer Humor',
-  description: 'Generate hilarious, AI-powered roasts of GitHub users based on their coding activity. All in good fun!',
-  keywords: ['GitHub', 'AI', 'Roast', 'Developer', 'Humor', 'Coding', 'Fun'],
+  title: 'GitHub Roast AI | Powered by Gemini AI',
+  description: 'Generate hilarious, AI-powered roasts of GitHub users using Google Gemini AI. All in good fun!',
+  keywords: ['GitHub', 'Gemini AI', 'Roast', 'Developer', 'Humor', 'Coding', 'Fun'],
+  authors: [{ name: 'GitHub Roast AI Team' }],
+  openGraph: {
+    type: 'website',
+    title: 'GitHub Roast AI (Powered by Gemini)',
+    description: 'AI-powered humorous roasts of GitHub users using Google Gemini AI',
+    siteName: 'GitHub Roast AI',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GitHub Roast AI | Gemini AI',
+    description: 'AI-powered humorous roasts of GitHub users using Google Gemini AI',
+  },
 };
 
 export default function RootLayout({

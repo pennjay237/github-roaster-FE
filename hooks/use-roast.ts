@@ -3,41 +3,71 @@ import { backendClient } from '@/lib/api/backend-client';
 import { RoastResponse } from '@/lib/types/roast.types';
 import { useLocalStorage } from './use-local-storage';
 import toast from 'react-hot-toast';
+import { roastResponseSchema } from '@/lib/schemas/roast.schema';
 
 export function useRoast() {
   const queryClient = useQueryClient();
   const [, setHistory] = useLocalStorage<RoastResponse[]>('roast-history', []);
 
   const mutation = useMutation({
-    mutationFn: async ({ username, temperature }: { username: string; temperature: number }) => {
-      const response = await backendClient.post<RoastResponse>('/roast', {
-        username,
-        temperature,
+    mutationFn: async ({ username, temperature, customInstructions }: { 
+      username: string; 
+      temperature: number;
+      customInstructions?: string;
+    }) => {
+      const response = await backendClient.post('/roast', {
+        username: username.trim().toLowerCase(),
+        temperature: parseFloat(temperature.toFixed(1)), 
+        customInstructions: customInstructions?.trim(),
       });
-      return response.data;
+      
+      const validatedData = roastResponseSchema.parse(response.data);
+      return validatedData;
     },
     
     onMutate: () => {
-      toast.loading('Generating your roast...', {
+      toast.loading('Generating your roast with Gemini AI...', {
         id: 'roast-loading',
+        duration: Infinity,
       });
     },
     
     onSuccess: (data) => {
-      toast.success('Roast generated successfully!', {
+      toast.success('Roast generated successfully! 🎉', {
         id: 'roast-loading',
+        duration: 3000,
+        icon: '🤖',
       });
       
-      // Update cache
       queryClient.setQueryData(['roast', data.githubData.username], data);
       
-      // Add to history
-      setHistory((prev) => [data, ...(prev || []).slice(0, 49)]);
+      setHistory((prev) => {
+        const history = prev || [];
+        return [data, ...history.slice(0, 49)];
+      });
+      
+      toast.success(`Generated using ${data.model}`, {
+        id: 'model-info',
+        duration: 2000,
+      });
     },
     
     onError: (error: Error) => {
-      toast.error(error.message || 'Failed to generate roast', {
+      console.error('Roast generation error:', error);
+      
+      let errorMessage = error.message || 'Failed to generate roast';
+      
+      if (errorMessage.includes('rate limit')) {
+        errorMessage = 'Gemini AI rate limit reached. Please try again in a minute.';
+      } else if (errorMessage.includes('safety') || errorMessage.includes('filtered')) {
+        errorMessage = 'Content filtered by Gemini safety settings. Please try different input.';
+      } else if (errorMessage.includes('API key')) {
+        errorMessage = 'Gemini AI service configuration issue. Please contact support.';
+      }
+      
+      toast.error(errorMessage, {
         id: 'roast-loading',
+        duration: 5000,
       });
     },
   });
@@ -59,6 +89,7 @@ export function useRoastHistory() {
     queryKey: ['roast-history'],
     queryFn: () => history || [],
     initialData: history || [],
+    staleTime: 60 * 1000,
   });
 }
 
@@ -70,5 +101,6 @@ export function useRoastByUsername(username: string) {
       return history.find((roast) => roast.githubData.username === username);
     },
     enabled: !!username,
+    staleTime: 5 * 60 * 1000, 
   });
 }

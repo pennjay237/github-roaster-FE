@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Flame, Menu, X, Home, BarChart3, Info } from 'lucide-react';
+import { Flame, Menu, X, Home, BarChart3, Info, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './theme-toggle';
 
@@ -25,10 +25,16 @@ export function Header() {
               <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
                 <Flame className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold hidden sm:inline">
-                GitHub Roast AI
-              </span>
-              <span className="text-xl font-bold sm:hidden">Roast AI</span>
+              <div>
+                <span className="text-xl font-bold hidden sm:inline">
+                  GitHub Roast AI
+                </span>
+                <span className="text-xl font-bold sm:hidden">Roast AI</span>
+                <div className="flex items-center gap-1">
+                  <Sparkles className="h-3 w-3 text-blue-500" />
+                  <span className="text-xs text-blue-600 dark:text-blue-400">Powered by Gemini</span>
+                </div>
+              </div>
             </Link>
           </div>
 

@@ -1,4 +1,4 @@
-import { Github, Twitter, Heart } from 'lucide-react';
+import { Github, Twitter, Heart, Brain } from 'lucide-react';
 import Link from 'next/link';
 
 export function Footer() {
@@ -11,39 +11,45 @@ export function Footer() {
           {/* Brand */}
           <div className="text-center md:text-left">
             <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
-              <div className="p-1 bg-gradient-to-r from-orange-500 to-red-500 rounded">
-                <Heart className="h-4 w-4 text-white" />
+              <div className="p-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded">
+                <Brain className="h-4 w-4 text-white" />
               </div>
               <span className="font-bold">GitHub Roast AI</span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Making developer humor accessible to all
+              Making developer humor accessible with Gemini AI
             </p>
+            <div className="mt-2 flex items-center gap-1">
+              <span className="text-xs text-gray-500">Powered by</span>
+              <span className="text-xs font-medium bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                Google Gemini AI
+              </span>
+            </div>
           </div>
 
           {/* Links */}
           <div className="flex flex-wrap justify-center gap-6 text-sm">
             <Link
               href="/privacy"
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
               href="/terms"
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
             >
               Terms of Service
             </Link>
             <Link
               href="/about"
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
             >
               About
             </Link>
             <Link
               href="/contact"
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
             >
               Contact
             </Link>
@@ -56,7 +62,8 @@ export function Footer() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
+                aria-label="GitHub"
               >
                 <Github className="h-5 w-5" />
               </a>
@@ -64,7 +71,8 @@ export function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
+                aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </a>
@@ -75,11 +83,26 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Gemini AI Notice */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+              <Brain className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-sm">Powered by Google Gemini AI</h4>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                This application uses Google's Gemini AI for content generation with built-in safety filters.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Disclaimer */}
-        <div className="mt-8 pt-6 border-t text-center">
+        <div className="mt-6 pt-6 border-t text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            This project is for entertainment purposes only. All roasts are AI-generated and should be taken in good humor. 
-            The creators are not responsible for any offense taken from generated content.
+            This project is for entertainment purposes only. All roasts are AI-generated by Gemini and should be taken in good humor. 
+            The creators are not responsible for any offense taken from generated content. Gemini AI includes built-in safety filters.
           </p>
         </div>
       </div>

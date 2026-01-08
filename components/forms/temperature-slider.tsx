@@ -26,24 +26,21 @@ export function TemperatureSlider({
   };
 
   const getTemperatureLabel = (temp: number) => {
-    if (temp <= 0.5) return 'Mild';
-    if (temp <= 1.0) return 'Balanced';
-    if (temp <= 1.5) return 'Spicy';
-    return 'Inferno';
+    if (temp <= 0.3) return 'Mild';     
+    if (temp <= 0.7) return 'Balanced';  
+    return 'Creative';                  
   };
 
   const getTemperatureIcon = (temp: number) => {
-    if (temp <= 0.5) return Flame;
-    if (temp <= 1.0) return Zap;
-    if (temp <= 1.5) return Thermometer;
+    if (temp <= 0.3) return Flame;
+    if (temp <= 0.7) return Zap;
     return Fire;
   };
 
   const getTemperatureColor = (temp: number) => {
-    if (temp <= 0.5) return 'text-green-500';
-    if (temp <= 1.0) return 'text-yellow-500';
-    if (temp <= 1.5) return 'text-orange-500';
-    return 'text-red-500';
+    if (temp <= 0.3) return 'text-green-500';
+    if (temp <= 0.7) return 'text-yellow-500';
+    return 'text-orange-500';           
   };
 
   const TemperatureIcon = getTemperatureIcon(value);
@@ -66,22 +63,21 @@ export function TemperatureSlider({
       <div className="relative">
         <input
           type="range"
-          min="0.1"
-          max="2.0"
+          min="0.0"  
+          max="1.0"  
           step="0.1"
           value={internalValue}
           onChange={handleChange}
           disabled={disabled}
-          className="w-full h-2 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-300 [&::-webkit-slider-thumb]:shadow-lg disabled:opacity-50"
+          className="w-full h-2 bg-gradient-to-r from-green-500 via-yellow-500 to-orange-500 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-300 [&::-webkit-slider-thumb]:shadow-lg disabled:opacity-50"
         />
         
-        {/* Marks */}
         <div className="flex justify-between px-1 mt-1">
-          {[0.1, 0.7, 1.3, 2.0].map((mark) => (
+          {[0.0, 0.3, 0.7, 1.0].map((mark) => (
             <div
               key={mark}
               className="flex flex-col items-center"
-              style={{ marginLeft: `${((mark - 0.1) / 1.9) * 100}%` }}
+              style={{ marginLeft: `${((mark - 0.0) / 1.0) * 100}%` }}
             >
               <div className="h-2 w-0.5 bg-gray-300 dark:bg-gray-700" />
               <span className="text-xs text-gray-500 mt-1">{mark.toFixed(1)}</span>
@@ -90,9 +86,8 @@ export function TemperatureSlider({
         </div>
       </div>
 
-      {/* Description */}
       <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-        Higher values make the roast more creative and unpredictable
+        Higher values make the roast more creative and unpredictable (Gemini range: 0.0-1.0)
       </p>
     </div>
   );
