@@ -123,15 +123,14 @@ export function UsernameForm() {
             )}
           </Button>
 
-          {/* Tips */}
           <div className="rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4">
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-orange-500" />
               Pro Tips
             </h4>
             <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-              <li>• Try popular developers like "torvalds" or "gaearon"</li>
-              <li>• Higher temperature = more creative (and spicy!) roasts</li>
+              <li>• Try popular developrs like "torvalds" or "gaearon"</li>
+              <li>• Higher roast intensity = more creative (and spicy!) roasts</li>
               <li>• All roasts are AI-generated and focus on coding habits only</li>
             </ul>
           </div>

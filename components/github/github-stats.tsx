@@ -65,12 +65,10 @@ export function GitHubStats({ data, className }: GitHubStatsProps) {
     },
   ];
 
-  // Fix: Properly calculate engagement rate
   const engagementRate = data.followers > 0 
     ? ((data.totalStars + data.totalForks) / data.followers).toFixed(2)
     : '0.00';
 
-  // Fix: Calculate percentage safely
   const engagementPercentage = Math.min(parseFloat(engagementRate) * 10, 100);
 
   return (

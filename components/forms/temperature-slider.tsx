@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Thermometer, Flame, Zap, Fire } from 'lucide-react';
+import { Flame, Thermometer, Zap, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
 interface TemperatureSliderProps {
@@ -34,7 +34,7 @@ export function TemperatureSlider({
   const getTemperatureIcon = (temp: number) => {
     if (temp <= 0.3) return Flame;
     if (temp <= 0.7) return Zap;
-    return Fire;
+    return Flame;
   };
 
   const getTemperatureColor = (temp: number) => {

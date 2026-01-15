@@ -954,6 +954,9 @@ video {
 .w-6 {
   width: 1.5rem;
 }
+.w-64 {
+  width: 16rem;
+}
 .w-8 {
   width: 2rem;
 }
@@ -1221,6 +1224,9 @@ video {
 }
 .border-b {
   border-bottom-width: 1px;
+}
+.border-r {
+  border-right-width: 1px;
 }
 .border-t {
   border-top-width: 1px;
@@ -2526,6 +2532,10 @@ video {
 }
 
 @media (min-width: 768px) {
+
+  .md\:block {
+    display: block;
+  }
 
   .md\:flex {
     display: flex;

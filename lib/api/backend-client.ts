@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+// Remove /api from the URL since your backend doesn't have it
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; // Changed from 'http://localhost:3001/api'
 
 export const backendClient = axios.create({
   baseURL: API_BASE_URL,
@@ -14,9 +15,12 @@ export const backendClient = axios.create({
 backendClient.interceptors.request.use(
   (config) => {
     // You can add authentication tokens here if needed
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Remove localStorage usage for SSR safety
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },

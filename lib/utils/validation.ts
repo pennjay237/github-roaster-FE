@@ -16,7 +16,6 @@ export function validateTemperature(temperature: number): {
     };
   }
   
-  // Gemini AI specific validation - temperature must be between 0.0 and 1.0
   if (isNaN(temperature)) {
     return {
       isValid: false,
