@@ -47,18 +47,6 @@ export function TemperatureSlider({
 
   return (
     <div className={cn('space-y-4', className)}>
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-medium flex items-center gap-2">
-          <Thermometer className="h-4 w-4" />
-          Roast Intensity
-        </label>
-        <div className="flex items-center gap-2">
-          <TemperatureIcon className={cn('h-4 w-4', getTemperatureColor(value))} />
-          <span className={cn('text-sm font-mono font-bold', getTemperatureColor(value))}>
-            {getTemperatureLabel(value)} ({value.toFixed(1)})
-          </span>
-        </div>
-      </div>
       
       <div className="relative">
         <input
