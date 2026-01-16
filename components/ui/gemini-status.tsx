@@ -18,7 +18,7 @@ export function GeminiStatus({ className }: GeminiStatusProps) {
     setMessage('Checking Gemini AI connection...');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/gemini/test`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/roast'}/gemini/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
