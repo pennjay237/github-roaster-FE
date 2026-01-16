@@ -1,149 +1,129 @@
-import { 
-  Star, 
-  GitFork, 
-  Users, 
-  BookOpen, 
-  Calendar,
-  Code,
-  TrendingUp,
-  Eye
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { GitHubData } from '@/lib/types/github.types';
-import { formatDate } from '@/lib/utils/format';
-import { cn } from '@/lib/utils/cn';
+'use client';
 
-interface GitHubStatsProps {
-  data: GitHubData;
-  className?: string;
+interface GithubStatsProps {
+  data: any;
 }
 
-export function GitHubStats({ data, className }: GitHubStatsProps) {
-  const stats = [
-    {
-      label: 'Repositories',
-      value: data.publicRepos,
-      icon: BookOpen,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-    },
-    {
-      label: 'Followers',
-      value: data.followers,
-      icon: Users,
-      color: 'text-green-500',
-      bgColor: 'bg-green-50 dark:bg-green-900/20',
-    },
-    {
-      label: 'Following',
-      value: data.following,
-      icon: Users,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
-    },
-    {
-      label: 'Stars',
-      value: data.totalStars,
-      icon: Star,
-      color: 'text-yellow-500',
-      bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
-    },
-    {
-      label: 'Forks',
-      value: data.totalForks,
-      icon: GitFork,
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-50 dark:bg-orange-900/20',
-    },
-    {
-      label: 'Account Age',
-      value: data.accountAge,
-      icon: Calendar,
-      color: 'text-red-500',
-      bgColor: 'bg-red-50 dark:bg-red-900/20',
-    },
-  ];
+export default function GithubStats({ data }: GithubStatsProps) {
+  const formatDate = (dateString: string) => {
+    if (!dateString || dateString === 'Invalid Date' || dateString === 'Never') return 'Unknown';
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch {
+      return 'Unknown';
+    }
+  };
 
-  const engagementRate = data.followers > 0 
-    ? ((data.totalStars + data.totalForks) / data.followers).toFixed(2)
-    : '0.00';
+  const calculateEngagementRate = () => {
+    if (!data || data.followers === 0) return '0.00';
+    const rate = ((data.publicRepos + data.totalStars) / data.followers) * 100;
+    return rate.toFixed(2);
+  };
 
-  const engagementPercentage = Math.min(parseFloat(engagementRate) * 10, 100);
+  if (!data) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Card className={cn('border-green-200 dark:border-green-800', className)}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Code className="h-5 w-5" />
-          GitHub Stats
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="space-y-6">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className={cn('rounded-lg p-4 text-center', stat.bgColor)}
-            >
-              <stat.icon className={cn('h-8 w-8 mx-auto mb-2', stat.color)} />
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Additional Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <h4 className="font-semibold flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Engagement
-            </h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Engagement Rate</span>
-                <span className="font-medium">{engagementRate}</span>
-              </div>
-              <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-green-500 to-blue-500"
-                  style={{ width: `${engagementPercentage}%` }}
-                />
-              </div>
-            </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Account Info Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <span className="text-blue-500">📅</span> Account Info
+        </h3>
+        <div className="space-y-3">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Joined GitHub</p>
+            <p className="font-medium text-gray-900 dark:text-white">
+              {formatDate(data.createdAt)}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              ({data.accountYears || '0'} years ago)
+            </p>
           </div>
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Last Activity</p>
+            <p className="font-medium text-gray-900 dark:text-white">
+              {formatDate(data.updatedAt || data.lastRepoUpdate)}
+            </p>
+          </div>
+        </div>
+      </div>
 
-          <div className="space-y-3">
-            <h4 className="font-semibold flex items-center gap-2">
-              <Eye className="h-4 w-4" />
-              Profile Info
-            </h4>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Joined</span>
-                <span className="font-medium">{formatDate(data.createdAt)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Last Updated</span>
-                <span className="font-medium">{formatDate(data.updatedAt)}</span>
-              </div>
-              {data.isHireable && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Status</span>
-                  <Badge variant="success" className="text-xs">
-                    Open to work
-                  </Badge>
-                </div>
-              )}
+      {/* Engagement Stats Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <span className="text-green-500">📈</span> Engagement
+        </h3>
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Engagement Rate</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              {calculateEngagementRate()}%
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Public Repos</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
+                {data.publicRepos || 0}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total Stars</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
+                {data.totalStars || 0}
+              </p>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Language & Repo Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <span className="text-purple-500">💻</span> Development
+        </h3>
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Most Used Language</p>
+            <p className="font-medium text-gray-900 dark:text-white">
+              {data.mostUsedLanguage || 'No languages detected'}
+            </p>
+            {data.mostUsedLanguageCount > 0 && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Used in {data.mostUsedLanguageCount} repos
+              </p>
+            )}
+          </div>
+          
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Most Starred Repo</p>
+            <p className="font-medium text-gray-900 dark:text-white truncate">
+              {data.mostStarredRepo?.name || 'None'}
+            </p>
+            {data.mostStarredRepo?.stars > 0 && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                ⭐ {data.mostStarredRepo.stars} stars
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

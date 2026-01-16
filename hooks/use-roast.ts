@@ -23,22 +23,20 @@ export const useGenerateRoast = () => {
           },
         });
 
-        console.log('✅ Backend response received:', response.data);
-        console.log('✅ Response status:', response.status);
-        console.log('✅ Has data property?', !!response.data);
-        console.log('✅ Data type:', typeof response.data);
+        console.log(' Backend response received:', response.data);
+        console.log(' Response status:', response.status);
+        console.log(' Has data property?', !!response.data);
+        console.log(' Data type:', typeof response.data);
         
-        // Check what the backend actually returns
         const backendData = response.data;
         
-        console.log('🔍 Checking backendData structure:');
+        console.log(' Checking backendData structure:');
         console.log('  - Has "roast" property?', backendData && 'roast' in backendData);
         console.log('  - Has "data" property?', backendData && 'data' in backendData);
         console.log('  - Has "metadata" property?', backendData && 'metadata' in backendData);
         
-        // Check if backendData is a string (possible error case)
         if (typeof backendData === 'string') {
-          console.warn('⚠️ Backend returned a string instead of object:', backendData);
+          console.warn(' Backend returned a string instead of object:', backendData);
           return {
             roast: `🔥 Debug: Backend returned string\n\n${backendData}`,
             data: {
@@ -62,19 +60,16 @@ export const useGenerateRoast = () => {
           };
         }
         
-        // The backend returns the full object with roast, data, metadata properties
-        // So we should return it as-is
         return backendData;
         
       } catch (error: any) {
-        console.error('❌ Backend error:', {
+        console.error(' Backend error:', {
           message: error.message,
           status: error.response?.status,
           data: error.response?.data,
           url: error.config?.url,
         });
         
-        // Return mock data for testing
         return {
           roast: `🔥 Debug Roast for ${username} 🔥\n\nThis is a debug roast to test the frontend display.\n\nBackend returned error: ${error.message}\n\nStatus: ${error.response?.status || 'Unknown'}`,
           data: {
@@ -114,5 +109,4 @@ export const useGenerateRoast = () => {
   });
 };
 
-// For backward compatibility
 export const useRoast = useGenerateRoast;

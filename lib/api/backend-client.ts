@@ -11,28 +11,26 @@ export const backendClient = axios.create({
   },
 });
 
-// Request interceptor for debugging
 backendClient.interceptors.request.use(
   (config) => {
-    console.log(`🚀 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
-    console.log('📤 Request data:', config.data || config.params);
+    console.log(` ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    console.log(' Request data:', config.data || config.params);
     return config;
   },
   (error) => {
-    console.error('❌ Request error:', error);
+    console.error(' Request error:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor for debugging
 backendClient.interceptors.response.use(
   (response) => {
-    console.log(`✅ ${response.status} ${response.config.url}`);
-    console.log('📥 Response data:', response.data);
+    console.log(` ${response.status} ${response.config.url}`);
+    console.log(' Response data:', response.data);
     return response;
   },
   (error) => {
-    console.error('❌ Response error:', {
+    console.error(' Response error:', {
       message: error.message,
       status: error.response?.status,
       data: error.response?.data,
@@ -42,10 +40,9 @@ backendClient.interceptors.response.use(
   }
 );
 
-// Add a function to generate roasts
 export async function generateRoast(username: string, temperature: number = 0.7, customInstructions?: string) {
   try {
-    console.log(`🎯 Generating roast for: ${username}`);
+    console.log(` Generating roast for: ${username}`);
     
     const response = await backendClient.get(`/roast/${username}`, {
       params: {
@@ -54,23 +51,18 @@ export async function generateRoast(username: string, temperature: number = 0.7,
       },
     });
 
-    console.log('📊 Raw response:', response.data);
+    console.log(' Raw response:', response.data);
 
-    // Your backend returns the data directly, not wrapped in a data property
-    // So we need to handle both cases
     const rawData = response.data;
     
-    // Check if the response already has the expected structure
     if (rawData && typeof rawData === 'object' && 'roast' in rawData) {
-      // Already in correct format
       const result = roastResponseSchemaRelaxed.safeParse(rawData);
       
       if (result.success) {
         console.log('✅ Valid roast response');
         return result.data;
       } else {
-        console.warn('⚠️ Invalid response structure:', result.error);
-        // Return as-is with fallback
+        console.warn(' Invalid response structure:', result.error);
         return {
           ...rawData,
           metadata: rawData.metadata || {
@@ -82,8 +74,7 @@ export async function generateRoast(username: string, temperature: number = 0.7,
         };
       }
     } else {
-      // Backend returned something unexpected
-      console.warn('⚠️ Unexpected response format, using mock data');
+      console.warn(' Unexpected response format, using mock data');
       return {
         roast: `🔥 GitHub Roast of ${username} 🔥\n\nLooks like the roast machine needs some debugging! But don't worry, ${username}, your code is probably cleaner than our API response formatting! 💻`,
         data: {
@@ -107,13 +98,12 @@ export async function generateRoast(username: string, temperature: number = 0.7,
       };
     }
   } catch (error: any) {
-    console.error('❌ Error fetching roast:', {
+    console.error(' Error fetching roast:', {
       message: error.message,
       status: error.response?.status,
       data: error.response?.data,
     });
     
-    // Return mock data on error
     return {
       roast: `🔥 Mock Roast for ${username} 🔥\n\nWell hello there, ${username}! I see you're a GitHub user with... well, with a GitHub account! Your commit history looks as mysterious as my morning coffee before I've had my first sip. But hey, at least you're here, and that's what counts! 🚀\n\n(Note: This is a mock response. Check if backend is running on http://localhost:3001)`,
       data: {

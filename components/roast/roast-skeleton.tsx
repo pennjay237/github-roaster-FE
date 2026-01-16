@@ -21,7 +21,6 @@ export function RoastSkeleton() {
         </CardHeader>
         
         <CardContent className="space-y-6">
-          {/* Roast Content Skeleton */}
           <div className="space-y-4">
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-full" />
@@ -30,7 +29,6 @@ export function RoastSkeleton() {
             <Skeleton className="h-4 w-2/3" />
           </div>
 
-          {/* Disclaimer Skeleton */}
           <div className="space-y-2">
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-5/6" />

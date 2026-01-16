@@ -7,7 +7,7 @@ export function useGitHubUser(username: string) {
     queryKey: ['github-user', username],
     queryFn: () => githubClient.getUserData(username),
     enabled: !!username && username.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, 
     retry: 1,
   });
 }
@@ -17,7 +17,7 @@ export function useGitHubRepos(username: string) {
     queryKey: ['github-repos', username],
     queryFn: () => githubClient.getUserRepos(username),
     enabled: !!username && username.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, 
     retry: 1,
   });
 }

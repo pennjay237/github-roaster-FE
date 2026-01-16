@@ -33,7 +33,6 @@ export default function DebugPage() {
     setError(null);
     
     try {
-      // Import your hook dynamically
       const { useRoast } = await import('@/hooks/use-roast');
       const { mutateAsync } = useRoast();
       const result = await mutateAsync({ username });

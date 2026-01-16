@@ -38,7 +38,6 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navigation.map((item) => (
               <Link
@@ -51,7 +50,6 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Right Side */}
           <div className="flex items-center gap-4">
             <ThemeToggle />
             
