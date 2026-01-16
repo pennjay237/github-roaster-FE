@@ -1,32 +1,30 @@
-import { Home, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="text-center animate-fade-in">
-        <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full mb-6">
-          <Search className="h-16 w-16 text-gray-400 dark:text-gray-600" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-950">
+      <div className="text-center max-w-md mx-auto px-6">
+        <div className="mb-8">
+          <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-6">
+            <span className="text-6xl">🔍</span>
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            404 - Page Not Found
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
+          </p>
         </div>
-        <h1 className="text-6xl font-bold text-gray-300 dark:text-gray-700 mb-4">404</h1>
-        <h2 className="text-2xl font-bold mb-4">Page not found</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/" passHref>
-            <Button className="gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
-              <Home className="h-5 w-5" />
-              Back to Home
-            </Button>
-          </Link>
-          <Link href="/" passHref>
-            <Button variant="outline" className="gap-2">
-              <Search className="h-5 w-5" />
-              Find a GitHub User
-            </Button>
-          </Link>
+        
+        <div className="space-y-4">
+          <a
+            href="/"
+            className="inline-block w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-105"
+          >
+            ← Back to Home
+          </a>
+          
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-8">
+            If you think this is a mistake, please contact support.
+          </p>
         </div>
       </div>
     </div>

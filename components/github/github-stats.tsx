@@ -1,7 +1,23 @@
 'use client';
 
+interface GitHubData {
+  createdAt: string;
+  updatedAt?: string;
+  lastRepoUpdate?: string;
+  accountYears?: number;
+  publicRepos?: number;
+  followers?: number;
+  totalStars?: number;
+  mostUsedLanguage?: string;
+  mostUsedLanguageCount?: number;
+  mostStarredRepo?: {
+    name: string;
+    stars: number;
+  };
+}
+
 interface GithubStatsProps {
-  data: any;
+  data: GitHubData;
 }
 
 export default function GithubStats({ data }: GithubStatsProps) {
@@ -19,8 +35,10 @@ export default function GithubStats({ data }: GithubStatsProps) {
   };
 
   const calculateEngagementRate = () => {
-    if (!data || data.followers === 0) return '0.00';
-    const rate = ((data.publicRepos + data.totalStars) / data.followers) * 100;
+    if (!data || !data.followers || data.followers === 0) return '0.00';
+    const repos = data.publicRepos || 0;
+    const stars = data.totalStars || 0;
+    const rate = ((repos + stars) / data.followers) * 100;
     return rate.toFixed(2);
   };
 
@@ -58,7 +76,7 @@ export default function GithubStats({ data }: GithubStatsProps) {
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Last Activity</p>
             <p className="font-medium text-gray-900 dark:text-white">
-              {formatDate(data.updatedAt || data.lastRepoUpdate)}
+              {formatDate(data.updatedAt || data.lastRepoUpdate || '')}
             </p>
           </div>
         </div>
@@ -104,7 +122,7 @@ export default function GithubStats({ data }: GithubStatsProps) {
             <p className="font-medium text-gray-900 dark:text-white">
               {data.mostUsedLanguage || 'No languages detected'}
             </p>
-            {data.mostUsedLanguageCount > 0 && (
+            {(data.mostUsedLanguageCount && data.mostUsedLanguageCount > 0) && (
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Used in {data.mostUsedLanguageCount} repos
               </p>
@@ -116,7 +134,7 @@ export default function GithubStats({ data }: GithubStatsProps) {
             <p className="font-medium text-gray-900 dark:text-white truncate">
               {data.mostStarredRepo?.name || 'None'}
             </p>
-            {data.mostStarredRepo?.stars > 0 && (
+            {(data.mostStarredRepo?.stars && data.mostStarredRepo.stars > 0) && (
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 ⭐ {data.mostStarredRepo.stars} stars
               </p>

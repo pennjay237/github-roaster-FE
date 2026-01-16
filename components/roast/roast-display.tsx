@@ -22,12 +22,6 @@ export function RoastDisplay({ roast, username, generatedAt, temperature = 0.7, 
           </p>
         </div>
         <div className="flex gap-2">
-          <span className="px-4 py-2 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 font-bold rounded-full">
-            AI-Powered 
-          </span>
-          <span className="px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-bold rounded-full">
-            Temperature: {temperature}
-          </span>
         </div>
       </div>
       

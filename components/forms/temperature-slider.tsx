@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { Flame, Thermometer, Zap, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
 interface TemperatureSliderProps {
@@ -17,44 +15,35 @@ export function TemperatureSlider({
   disabled = false,
   className,
 }: TemperatureSliderProps) {
-  const [internalValue, setInternalValue] = useState(value);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(e.target.value);
-    setInternalValue(newValue);
     onChange(newValue);
   };
 
   const getTemperatureLabel = (temp: number) => {
     if (temp <= 0.3) return 'Mild';     
     if (temp <= 0.7) return 'Balanced';  
-    return 'Creative';                  
+    return 'Creative';
   };
-
-  const getTemperatureIcon = (temp: number) => {
-    if (temp <= 0.3) return Flame;
-    if (temp <= 0.7) return Zap;
-    return Flame;
-  };
-
-  const getTemperatureColor = (temp: number) => {
-    if (temp <= 0.3) return 'text-green-500';
-    if (temp <= 0.7) return 'text-yellow-500';
-    return 'text-orange-500';           
-  };
-
-  const TemperatureIcon = getTemperatureIcon(value);
 
   return (
     <div className={cn('space-y-4', className)}>
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Creativity Level: {getTemperatureLabel(value)}
+        </span>
+        <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+          {value.toFixed(1)}
+        </span>
+      </div>
       
       <div className="relative">
         <input
           type="range"
-          min="0.0"  
-          max="1.0"  
+          min="0.0"
+          max="1.0"
           step="0.1"
-          value={internalValue}
+          value={value}
           onChange={handleChange}
           disabled={disabled}
           className="w-full h-2 bg-gradient-to-r from-green-500 via-yellow-500 to-orange-500 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-300 [&::-webkit-slider-thumb]:shadow-lg disabled:opacity-50"
@@ -75,7 +64,7 @@ export function TemperatureSlider({
       </div>
 
       <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-        Higher values make the roast more creative and unpredictable (Gemini range: 0.0-1.0)
+        Higher values make the roast more creative and unpredictable
       </p>
     </div>
   );
