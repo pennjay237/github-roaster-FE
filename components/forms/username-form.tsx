@@ -37,7 +37,6 @@ export default function UsernameForm({
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // API Configuration
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
   
   const getRoastEndpoint = (username: string, temp: number = 0.7) => {
@@ -45,56 +44,56 @@ export default function UsernameForm({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username.trim()) return;
-
-    const loadingState = true;
+  e.preventDefault();
+  if (!username.trim()) return;
+  
+  const loadingState = true;
+  setIsLoading(loadingState);
+  onLoadingChange?.(loadingState);
+  setError(null);
+  setRoastData(null);
+  setShowShareOptions(false);
+  
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const response = await fetch(`${apiUrl}/roast/${username}?temperature=${temperature}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = 'Failed to generate roast';
+      
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.message || errorData.error?.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      
+      throw new Error(errorMessage);
+    }
+    
+    const data = await response.json();
+    
+    if (data.success === false) {
+      throw new Error(data.error || 'Failed to generate roast');
+    }
+    
+    setRoastData(data);
+    onRoastGenerated?.(data);
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Something went wrong');
+    console.error('Roast generation error:', err);
+  } finally {
+    const loadingState = false;
     setIsLoading(loadingState);
     onLoadingChange?.(loadingState);
-    setError(null);
-    setRoastData(null);
-    setShowShareOptions(false);
-
-    try {
-      const response = await fetch(getRoastEndpoint(username, temperature), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Failed to generate roast';
-        
-        try {
-          const errorData = JSON.parse(errorText);
-          errorMessage = errorData.message || errorData.error?.message || errorMessage;
-        } catch {
-          errorMessage = errorText || errorMessage;
-        }
-        
-        throw new Error(errorMessage);
-      }
-      
-      const data: RoastData = await response.json();
-      
-      if (data.success === false) {
-        throw new Error('Failed to generate roast');
-      }
-      
-      setRoastData(data);
-      onRoastGenerated?.(data);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Something went wrong';
-      setError(errorMessage);
-      console.error('Roast generation error:', err);
-    } finally {
-      const loadingState = false;
-      setIsLoading(loadingState);
-      onLoadingChange?.(loadingState);
-    }
-  };
+  }
+};
 
   const copyToClipboard = async () => {
     if (!roastData?.roast) return;
@@ -162,7 +161,6 @@ export default function UsernameForm({
     onRoastGenerated?.(null);
   };
 
-  // Temperature slider component
   const TemperatureSlider = () => {
     const getCreativityLabel = (temp: number) => {
       if (temp <= 0.3) return 'Conservative';
