@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../styles/globals.css';
 import '../styles/animations.css';
-import { QueryProvider } from '@/components/providers/query-provider';
+import QueryProvider from '@/components/providers/query-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'GitHub Roast AI',
-  description: 'AI-powered humorous roasts of GitHub users',
+  title: 'GitHub Roast AI - AI-Powered Developer Roasts',
+  description: 'Get hilarious AI-powered roasts of GitHub users based on their coding habits, repository stats, and GitHub activity!',
 };
 
 export default function RootLayout({
@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} antialiased`}>
         <QueryProvider>
           {children}
         </QueryProvider>

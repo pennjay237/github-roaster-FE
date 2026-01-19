@@ -1,13 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { Share2, Twitter, Linkedin, Copy, Mail, MessageSquare } from 'lucide-react';
+import { Share2, Twitter, Linkedin, Copy, Mail, MessageSquare, Globe, MapPin, Briefcase, Link as LinkIcon } from 'lucide-react';
 
 interface RoastData {
   success: boolean;
   roast: string;
   data?: {
     username: string;
+    name?: string;
+    bio?: string;
+    publicRepos?: number;
+    followers?: number;
+    following?: number;
+    totalStars?: number;
+    accountYears?: number;
+    mostUsedLanguage?: string;
+    activityLevel?: string;
+    avatarUrl?: string;
+    profileUrl?: string;
+    location?: string;
+    company?: string;
+    email?: string;
+    blog?: string;
     [key: string]: any;
   };
   metadata?: {
@@ -37,63 +52,53 @@ export default function UsernameForm({
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-  
-  const getRoastEndpoint = (username: string, temp: number = 0.7) => {
-    return `${API_BASE_URL}/roast/${username}?temperature=${temp}`;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!username.trim()) return;
-  
-  const loadingState = true;
-  setIsLoading(loadingState);
-  onLoadingChange?.(loadingState);
-  setError(null);
-  setRoastData(null);
-  setShowShareOptions(false);
-  
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    const response = await fetch(`${apiUrl}/roast/${username}?temperature=${temperature}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    e.preventDefault();
+    if (!username.trim()) return;
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      let errorMessage = 'Failed to generate roast';
+    setIsLoading(true);
+    setError(null);
+    setRoastData(null);
+    setShowShareOptions(false);
+    
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/roast/${username}?temperature=${temperature}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       
-      try {
-        const errorData = JSON.parse(errorText);
-        errorMessage = errorData.message || errorData.error?.message || errorMessage;
-      } catch {
-        errorMessage = errorText || errorMessage;
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Failed to generate roast';
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        
+        throw new Error(errorMessage);
       }
       
-      throw new Error(errorMessage);
+      const data = await response.json();
+      
+      if (data.success === false) {
+        throw new Error(data.error || 'Failed to generate roast');
+      }
+      
+      setRoastData(data);
+      onRoastGenerated?.(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+      console.error('Roast generation error:', err);
+    } finally {
+      setIsLoading(false);
     }
-    
-    const data = await response.json();
-    
-    if (data.success === false) {
-      throw new Error(data.error || 'Failed to generate roast');
-    }
-    
-    setRoastData(data);
-    onRoastGenerated?.(data);
-  } catch (err) {
-    setError(err instanceof Error ? err.message : 'Something went wrong');
-    console.error('Roast generation error:', err);
-  } finally {
-    const loadingState = false;
-    setIsLoading(loadingState);
-    onLoadingChange?.(loadingState);
-  }
-};
+  };
 
   const copyToClipboard = async () => {
     if (!roastData?.roast) return;
@@ -161,43 +166,89 @@ export default function UsernameForm({
     onRoastGenerated?.(null);
   };
 
-  const TemperatureSlider = () => {
-    const getCreativityLabel = (temp: number) => {
-      if (temp <= 0.3) return 'Conservative';
-      if (temp <= 0.6) return 'Balanced';
-      if (temp <= 0.9) return 'Creative';
-      return 'Wild';
-    };
+  const getCreativityLabel = (temp: number) => {
+    if (temp <= 0.3) return 'Conservative';
+    if (temp <= 0.6) return 'Balanced';
+    if (temp <= 0.9) return 'Creative';
+    return 'Wild';
+  };
 
+  const UserAvatar = ({ user, className }: { user: any; className?: string }) => {
+    if (!user) return null;
+    
     return (
-      <div className="space-y-3 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              🎭 AI Creativity: {temperature.toFixed(1)}
-            </label>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {getCreativityLabel(temperature)}
-            </p>
+      <div className={`bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 ${className}`}>
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          {/* Avatar */}
+          <div className="relative">
+            <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 shadow-lg">
+              <img
+                src={user.avatarUrl || `https://github.com/${user.username}.png`}
+                alt={user.username}
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <div className="absolute -bottom-2 -right-2">
+              <span className="px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold rounded-full">
+                @{user.username}
+              </span>
+            </div>
           </div>
-        </div>
-        
-        <input
-          type="range"
-          min="0.1"
-          max="1.0"
-          step="0.1"
-          value={temperature}
-          onChange={(e) => setTemperature(parseFloat(e.target.value))}
-          className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
-          style={{
-            background: `linear-gradient(to right, #10b981 0%, #3b82f6 30%, #8b5cf6 60%, #ef4444 100%)`
-          }}
-        />
-        
-        <div className="flex justify-between text-xs text-gray-500 px-1">
-          <span>More Factual</span>
-          <span>More Creative</span>
+
+          {/* User Info */}
+          <div className="flex-1 text-center sm:text-left">
+            {user.name && (
+              <h3 className="text-2xl font-bold mb-1">{user.name}</h3>
+            )}
+            
+            {user.bio && (
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                {user.bio}
+              </p>
+            )}
+
+            {/* Metadata */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
+              {user.location && (
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <MapPin className="h-4 w-4" />
+                  <span>{user.location}</span>
+                </div>
+              )}
+              
+              {user.company && (
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <Briefcase className="h-4 w-4" />
+                  <span>{user.company}</span>
+                </div>
+              )}
+              
+              {user.email && (
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <Mail className="h-4 w-4" />
+                  <span>{user.email}</span>
+                </div>
+              )}
+              
+              {user.blog && (
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <LinkIcon className="h-4 w-4" />
+                  <span className="truncate">{user.blog}</span>
+                </div>
+              )}
+            </div>
+
+            {/* GitHub Profile Link */}
+            <a
+              href={user.profileUrl || `https://github.com/${user.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
+            >
+              <Globe className="h-4 w-4" />
+              View GitHub Profile
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -230,7 +281,7 @@ export default function UsernameForm({
               <button
                 type="submit"
                 disabled={isLoading || !username.trim()}
-                className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-black to-black hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-black to-black disabled:from-gray-500 disabled:to-gray-500 text-white font-bold rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -243,6 +294,7 @@ export default function UsernameForm({
             </div>
           </div>
           
+          
         </form>
       </div>
 
@@ -250,7 +302,7 @@ export default function UsernameForm({
       {error && (
         <div className="p-4 sm:p-6 bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-2xl animate-fade-in">
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-xl sm:text-2xl"></span>
+            <span className="text-xl sm:text-2xl">❌</span>
             <h3 className="text-lg sm:text-xl font-bold text-red-800 dark:text-red-300">
               Error
             </h3>
@@ -269,6 +321,44 @@ export default function UsernameForm({
         </div>
       )}
 
+      {/* User Avatar & Stats */}
+      {roastData?.data && (
+        <div className="animate-fade-up">
+          <UserAvatar user={roastData.data} />
+          
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Public Repos</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {roastData.data.publicRepos || 0}
+              </p>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {roastData.data.followers || 0}
+              </p>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total Stars</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {roastData.data.totalStars || 0}
+              </p>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Account Age</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {roastData.data.accountYears || 0} yrs
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Full Roast Display */}
       {roastData?.roast && !showRoastDisplay && (
         <div className="animate-scale-in space-y-6">
@@ -277,7 +367,7 @@ export default function UsernameForm({
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl sm:text-3xl"></span>
+                  <span className="text-2xl sm:text-3xl">🔥</span>
                   <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                     Roast of @{roastData.data?.username || username}
                   </h3>
@@ -287,9 +377,6 @@ export default function UsernameForm({
                 </p>
               </div>
               <div className="flex gap-2 mt-2 md:mt-0">
-                <span className="px-3 py-1 sm:px-4 sm:py-2 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 font-bold rounded-full text-sm">
-                  AI-Powered 🔥
-                </span>
                 <span className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-bold rounded-full text-sm">
                   Gemini AI
                 </span>
@@ -322,7 +409,7 @@ export default function UsernameForm({
                     </button>
                     <button
                       onClick={() => setShowShareOptions(!showShareOptions)}
-                      className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-lg transition-colors duration-200 text-sm"
+                      className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-black to-black hover:from-black hover:to-black text-white font-semibold rounded-lg transition-colors duration-200 text-sm"
                     >
                       <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
                       {showShareOptions ? 'Hide Options' : 'Share on Social'}
@@ -372,7 +459,7 @@ export default function UsernameForm({
                       className="flex flex-col items-center justify-center p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors duration-200 group"
                     >
                       <Mail className="h-6 w-6 sm:h-8 sm:w-8 text-red-500 group-hover:text-red-600 dark:text-red-400 dark:group-hover:text-red-300 mb-2" />
-                      <span className="text-xs sm:text-sm font-medium text-gray:700 dark:text-gray-300">Email</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Email</span>
                     </button>
                   </div>
                 </div>
