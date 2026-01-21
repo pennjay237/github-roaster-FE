@@ -273,7 +273,7 @@ export default function UsernameForm({
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="e.g., octocat, microsoft, torvalds"
+                placeholder="e.g pennjay237"
                 className="w-full flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-base sm:text-lg"
                 disabled={isLoading}
               />
