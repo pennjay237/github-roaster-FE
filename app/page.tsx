@@ -21,13 +21,14 @@ export default function HomePage() {
   const [roastData, setRoastData] = useState<RoastData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRoastGenerated = (data: RoastData) => {
-    setRoastData(data);
+  const handleRoastGenerated = (data: RoastData | null) => {
+    setRoastData(data); 
   };
 
   const handleLoadingChange = (loading: boolean) => {
     setIsLoading(loading);
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
