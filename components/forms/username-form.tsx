@@ -182,10 +182,13 @@ export default function UsernameForm({
           {/* Avatar */}
           <div className="relative">
             <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 shadow-lg">
-              <img
+              <Image
                 src={user.avatarUrl || `https://github.com/${user.username}.png`}
                 alt={user.username}
+                width={96}
+                height={96}
                 className="object-cover w-full h-full"
+                unoptimized={true}
               />
             </div>
             <div className="absolute -bottom-2 -right-2">
