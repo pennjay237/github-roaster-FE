@@ -13,7 +13,7 @@ interface UserAvatarProps {
 
 export function UserAvatar({ user, className }: UserAvatarProps) {
   return (
-    <Card className={cn('border-blue-200 dark:border-blue-800', className)}>
+    <Card className={cn('border-blue-200 dark:border-blue-700', className)}>
       <CardContent className="p-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {/* Avatar */}
