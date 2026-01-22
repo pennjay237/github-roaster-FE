@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Share2, Twitter, Linkedin, Copy, Mail, MessageSquare, Globe, MapPin, Briefcase, Link as LinkIcon } from 'lucide-react';
 
 interface RoastData {

@@ -38,8 +38,21 @@ export default function GithubStats({ data }: GithubStatsProps) {
     if (!data || !data.followers || data.followers === 0) return '0.00';
     const repos = data.publicRepos || 0;
     const stars = data.totalStars || 0;
-    const rate = ((repos + stars) / data.followers) * 100;
+    const contributions = repos + stars;
+    
+    if (contributions === 0) return '0.00';
+    
+    const rate = (contributions / data.followers) * 100;
     return rate.toFixed(2);
+  };
+
+  const getEngagementLevel = () => {
+    const rate = parseFloat(calculateEngagementRate());
+    if (rate === 0) return { level: 'No engagement', color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-700' };
+    if (rate < 10) return { level: 'Low', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-900/20' };
+    if (rate < 50) return { level: 'Moderate', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' };
+    if (rate < 100) return { level: 'High', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20' };
+    return { level: 'Very High', color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' };
   };
 
   if (!data) {
@@ -55,6 +68,8 @@ export default function GithubStats({ data }: GithubStatsProps) {
       </div>
     );
   }
+
+  const engagementLevel = getEngagementLevel();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -82,31 +97,55 @@ export default function GithubStats({ data }: GithubStatsProps) {
         </div>
       </div>
 
-      {/* Engagement Stats Card */}
+      {/* Engagement Stats Card - ENHANCED */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <span className="text-green-500">📈</span> Engagement
+          <span className="text-green-500">📈</span> Engagement Metrics
         </h3>
         <div className="space-y-4">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Engagement Rate</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {calculateEngagementRate()}%
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Engagement Rate</p>
+            <div className="flex items-center gap-3 mb-2">
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                {calculateEngagementRate()}%
+              </p>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${engagementLevel.color} ${engagementLevel.bg}`}>
+                {engagementLevel.level}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              (Repos + Stars) ÷ Followers × 100
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Public Repos</p>
+          
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
+                {data.followers || 0}
+              </p>
+            </div>
+            <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Repos</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
                 {data.publicRepos || 0}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Stars</p>
+            <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Stars</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
                 {data.totalStars || 0}
               </p>
             </div>
+          </div>
+          
+          <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="font-medium">Formula:</span> 
+              <code className="ml-1 bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded text-xs">
+                ({data.publicRepos || 0} + {data.totalStars || 0}) / {data.followers || 1} × 100
+              </code>
+            </p>
           </div>
         </div>
       </div>

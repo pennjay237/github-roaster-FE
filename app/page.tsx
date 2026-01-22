@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import UsernameForm from '@/components/forms/username-form';
 import { RoastSkeleton } from '@/components/roast/roast-skeleton';
+import GithubStats from '@/components/github/github-stats'; // Import the component
 
 interface RoastData {
   roast: string;
@@ -28,7 +29,6 @@ export default function HomePage() {
   const handleLoadingChange = (loading: boolean) => {
     setIsLoading(loading);
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
@@ -113,9 +113,6 @@ export default function HomePage() {
                 {/* Success Message - Better desktop presentation */}
                 <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border border-green-200 dark:border-green-800">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="p-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl">
-                      <span className="text-2xl">✅</span>
-                    </div>
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                         Roast Generated Successfully!
@@ -148,6 +145,29 @@ export default function HomePage() {
                   </div>
                 </div>
                 
+                {/* ADDED: GitHub Engagement Stats Component */}
+                {roastData.data && roastData.data.createdAt && (
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                    <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <span className="text-blue-500">📈</span> GitHub Engagement Analytics
+                    </h4>
+                    <GithubStats 
+                      data={{
+                        createdAt: roastData.data.createdAt || '',
+                        updatedAt: roastData.data.updatedAt,
+                        lastRepoUpdate: roastData.data.lastRepoUpdate,
+                        accountYears: roastData.data.accountYears,
+                        publicRepos: roastData.data.publicRepos,
+                        followers: roastData.data.followers,
+                        totalStars: roastData.data.totalStars,
+                        mostUsedLanguage: roastData.data.mostUsedLanguage,
+                        mostUsedLanguageCount: roastData.data.mostUsedLanguageCount,
+                        mostStarredRepo: roastData.data.mostStarredRepo
+                      }}
+                    />
+                  </div>
+                )}
+                
                 {/* Stats Preview - Added for desktop */}
                 {roastData.data && (
                   <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
@@ -165,7 +185,7 @@ export default function HomePage() {
                         <p className="text-2xl font-bold text-gray-900 dark:text-white">
                           {roastData.data.followers || 0}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
+                        <p className="text-sm text-gray500 dark:text-gray-400">Followers</p>
                       </div>
                       <div className="text-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                         <p className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -203,20 +223,14 @@ export default function HomePage() {
                 
                 <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl">
                   <div className="text-center p-4">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-3">
-                    </div>
                     <h4 className="font-semibold mb-1">Fast Generation</h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Get roasts in seconds</p>
                   </div>
                   <div className="text-center p-4">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full mb-3">
-                    </div>
                     <h4 className="font-semibold mb-1">Accurate Data</h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Real GitHub statistics</p>
                   </div>
                   <div className="text-center p-4">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full mb-3">
-                    </div>
                     <h4 className="font-semibold mb-1">Funny & Clean</h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Developer-focused humor</p>
                   </div>
