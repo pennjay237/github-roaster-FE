@@ -19,13 +19,14 @@ export function UserAvatar({ user, className }: UserAvatarProps) {
           {/* Avatar */}
           <div className="relative">
             <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 shadow-lg">
-              <Image
-                src={user.avatarUrl}
-                alt={user.username}
-                fill
-                className="object-cover"
-                sizes="96px"
-              />
+             <Image
+               src={user.avatarUrl || `https://github.com/${user.username}.png`}
+               alt={user.username}
+               width={96}
+               height={96}
+               className="object-cover w-full h-full"
+               unoptimized={true} 
+            />
             </div>
             <div className="absolute -bottom-2 -right-2">
               <Badge variant="default" className="bg-gradient-to-r from-blue-500 to-purple-500">
