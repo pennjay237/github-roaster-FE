@@ -33,31 +33,33 @@ export interface GitHubRepo {
   size: number;
 }
 
+
 export interface GitHubData {
   username: string;
-  name: string | null;
-  bio: string | null;
   avatarUrl: string;
   profileUrl: string;
-  publicRepos: number;
-  followers: number;
-  following: number;
-  accountAge: string;
   createdAt: string;
-  updatedAt: string;
-  recentRepos: GitHubRepo[];
-  languages: Record<string, number>;
-  totalStars: number;
-  totalForks: number;
-  mostUsedLanguage: string | null;
-  repoActivity?: {
-    active: number;
-    inactive: number;
+  name?: string;
+  bio?: string;
+  email?: string;
+  location?: string;
+  company?: string;
+  blog?: string;
+  publicRepos?: number;
+  followers?: number;
+  following?: number;
+  totalStars?: number;
+  accountYears?: number;
+  updatedAt?: string;
+  lastRepoUpdate?: string;
+  
+  mostUsedLanguage?: string;
+  mostUsedLanguageCount?: number;
+  mostStarredRepo?: {
+    name: string;
+    stars: number;
   };
-  isHireable?: boolean;
-  hasBlog?: boolean;
-  hasEmail?: boolean;
-  hasLocation?: boolean;
+    [key: string]: any;
 }
 
 export interface GitHubStats {
