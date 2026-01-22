@@ -118,7 +118,7 @@ export default function HomePage() {
                         Roast Generated Successfully!
                       </h3>
                       <p className="text-gray-600 dark:text-gray-400">
-                        Your roast for <span className="font-semibold text-blue-600 dark:text-blue-400">@{roastData.data?.username}</span> is ready!
+                        Your roast for <span className="font-semibold text-blue-600 dark:text-blue-600">@{roastData.data?.username}</span> is ready!
                       </p>
                     </div>
                   </div>
@@ -130,12 +130,7 @@ export default function HomePage() {
                         {roastData.metadata?.model || 'Gemini AI'}
                       </p>
                     </div>
-                    <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Temperature</p>
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {roastData.metadata?.temperature || 0.7}
-                      </p>
-                    </div>
+                   
                     <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                       <p className="text-sm text-gray-500 dark:text-gray-400">Generated</p>
                       <p className="font-semibold text-gray-900 dark:text-white">
