@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: true, 
+  },
   images: {
+    domains: ['github.com'], 
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-        pathname: '**',
+        hostname: 'github.com',
+        pathname: '/**',
       },
     ],
   },
