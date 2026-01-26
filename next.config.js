@@ -1,17 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true, 
+    ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['github.com'], 
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'github.com',
-        pathname: '/**',
-      },
-    ],
+    domains: ['github.com'],
+  },
+  experimental: {
+    serverActions: false, 
   },
 };
 
