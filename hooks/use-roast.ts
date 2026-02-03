@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { backendClient, generateRoast } from '@/lib/api/backend-client';
+import { backendClient } from '@/lib/api/backend-client';
 import { roastResponseSchemaRelaxed } from '@/lib/schemas/roast.schema';
 
 export interface GenerateRoastParams {

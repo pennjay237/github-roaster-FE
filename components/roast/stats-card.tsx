@@ -68,7 +68,7 @@ export function StatsCard({ data, className }: StatsCardProps) {
                 </span>
                 {getTrendIcon(stat.trend)}
               </div>
-              <div className="text-2xl font-bold">{stat.value.toLocaleString()}</div>
+              <div className="text-2xl font-bold">{stat.value !== undefined ? stat.value.toLocaleString() : '0'}</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {stat.change}
               </div>
