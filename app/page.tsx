@@ -42,105 +42,98 @@ export default function HomePage() {
           </p>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Username Form — VERTICAL under hero */}
+        {!roastData && (
+          <div className="max-w-2xl mx-auto mb-12">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border">
+              <UsernameForm
+                onRoastGenerated={handleRoastGenerated}
+                onLoadingChange={handleLoadingChange}
+                showRoastDisplay={false}
+              />
+            </div>
+          </div>
+        )}
 
-          {/* Left Column (ONLY shown before roast exists) */}
-          {!roastData && (
-            <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border">
+        {/* Results Area */}
+        <div className="max-w-6xl mx-auto space-y-6">
+
+          {!roastData ? (
+            <div className="text-center py-20 border rounded-2xl">
+              <h3 className="text-3xl font-bold mb-4">Ready to Roast?</h3>
+              <p className="text-gray-500">
+                Enter a GitHub username to begin.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Success Message */}
+              <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border">
+                <h3 className="text-2xl font-bold mb-2">
+                  Roast Generated Successfully!
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Roast for{' '}
+                  <span className="font-semibold text-blue-600">
+                    @{roastData.data?.username}
+                  </span>
+                </p>
+
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border">
+                    <p className="text-sm text-gray-500">Model</p>
+                    <p className="font-semibold">
+                      {roastData.metadata?.model || 'Gemini AI'}
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border">
+                    <p className="text-sm text-gray-500">Generated</p>
+                    <p className="font-semibold">
+                      {new Date(
+                        roastData.metadata?.generatedAt || Date.now()
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Username Form after roast */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border">
                 <UsernameForm
                   onRoastGenerated={handleRoastGenerated}
                   onLoadingChange={handleLoadingChange}
                   showRoastDisplay={false}
                 />
               </div>
-            </div>
-          )}
 
-          {/* Right Column */}
-          <div className={`${roastData ? 'lg:col-span-3' : 'lg:col-span-2'} space-y-6`}>
+              {isLoading && <RoastSkeleton />}
 
-            {!roastData ? (
-              /* Empty State */
-              <div className="text-center py-20 border rounded-2xl">
-                <h3 className="text-3xl font-bold mb-4">Ready to Roast?</h3>
-                <p className="text-gray-500">
-                  Enter a GitHub username to begin.
-                </p>
-              </div>
-            ) : (
-              <>
-                {/* Success Message */}
-                <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border">
-                  <h3 className="text-2xl font-bold mb-2">
-                    Roast Generated Successfully!
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Roast for{' '}
-                    <span className="font-semibold text-blue-600">
-                      @{roastData.data?.username}
-                    </span>
-                  </p>
+              {!isLoading && roastData.data?.createdAt && (
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border">
+                  <h4 className="text-lg font-semibold mb-4">
+                    GitHub Engagement Analytics
+                  </h4>
 
-                  <div className="grid grid-cols-2 gap-4 mt-6">
-                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border">
-                      <p className="text-sm text-gray-500">Model</p>
-                      <p className="font-semibold">
-                        {roastData.metadata?.model || 'Gemini AI'}
-                      </p>
-                    </div>
-
-                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border">
-                      <p className="text-sm text-gray-500">Generated</p>
-                      <p className="font-semibold">
-                        {new Date(
-                          roastData.metadata?.generatedAt || Date.now()
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/*  Username Form MOVED HERE */}
-                <div className="bg-gradient-to-br from-white to-white dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border">
-                  <UsernameForm
-                    onRoastGenerated={handleRoastGenerated}
-                    onLoadingChange={handleLoadingChange}
-                    showRoastDisplay={false}
+                  <GithubStats
+                    data={{
+                      createdAt: roastData.data.createdAt,
+                      updatedAt: roastData.data.updatedAt,
+                      lastRepoUpdate: roastData.data.lastRepoUpdate,
+                      accountYears: roastData.data.accountYears,
+                      publicRepos: roastData.data.publicRepos,
+                      followers: roastData.data.followers,
+                      totalStars: roastData.data.totalStars,
+                      mostUsedLanguage: roastData.data.mostUsedLanguage,
+                      mostUsedLanguageCount:
+                        roastData.data.mostUsedLanguageCount,
+                      mostStarredRepo: roastData.data.mostStarredRepo,
+                    }}
                   />
                 </div>
-
-                {/* Roast Skeleton MOVED HERE */}
-                {isLoading && <RoastSkeleton />}
-
-                {/* GitHub Stats (last) */}
-                {!isLoading && roastData.data?.createdAt && (
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border">
-                    <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <span className="text-blue-500"></span>
-                      GitHub Engagement Analytics
-                    </h4>
-
-                    <GithubStats
-                      data={{
-                        createdAt: roastData.data.createdAt,
-                        updatedAt: roastData.data.updatedAt,
-                        lastRepoUpdate: roastData.data.lastRepoUpdate,
-                        accountYears: roastData.data.accountYears,
-                        publicRepos: roastData.data.publicRepos,
-                        followers: roastData.data.followers,
-                        totalStars: roastData.data.totalStars,
-                        mostUsedLanguage: roastData.data.mostUsedLanguage,
-                        mostUsedLanguageCount:
-                          roastData.data.mostUsedLanguageCount,
-                        mostStarredRepo: roastData.data.mostStarredRepo,
-                      }}
-                    />
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* Info Card */}
