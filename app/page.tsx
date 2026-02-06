@@ -68,7 +68,7 @@ export default function HomePage() {
           ) : (
             <>
               {/* Success Message */}
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border">
+              <div className="bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border">
                 <h3 className="text-2xl font-bold mb-2">
                   Roast Generated Successfully!
                 </h3>

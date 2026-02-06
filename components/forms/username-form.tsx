@@ -471,9 +471,7 @@ export default function UsernameForm({
             
             {/* Footer Disclaimer */}
             <div className="pt-6 border-t-2 border-orange-200 dark:border-gray-700">
-              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                <strong>Disclaimer:</strong> {roastData.metadata?.disclaimer || 'This roast is AI-generated and intended for entertainment only.'}
-              </p>
+              
             </div>
           </div>
         </div>
