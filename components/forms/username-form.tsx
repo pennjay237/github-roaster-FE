@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Share2, Twitter, Linkedin, Copy, Mail, MessageSquare, Globe, MapPin, Briefcase, Link as LinkIcon } from 'lucide-react';
+import { Share2, Twitter, Linkedin, Copy, Mail, MessageSquare, Globe, MapPin, Briefcase, Link as LinkIcon, CheckCircle, Key } from 'lucide-react';
+import { ApiKeyModal } from '../ui/api-key-modal';
 
 interface RoastData {
   success: boolean;
@@ -31,6 +32,7 @@ interface RoastData {
     temperature: number;
     model: string;
     disclaimer: string;
+    usingUserApiKey?: boolean;
   };
 }
 
@@ -39,6 +41,7 @@ interface UsernameFormProps {
   onLoadingChange?: (loading: boolean) => void;
   showRoastDisplay?: boolean;
 }
+
 export default function UsernameForm({
   onRoastGenerated,
   onLoadingChange,
@@ -51,6 +54,20 @@ export default function UsernameForm({
   const [roastData, setRoastData] = useState<RoastData | null>(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [copied, setCopied] = useState(false);
+  
+  // ✅ NEW: API Key management
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [userApiKey, setUserApiKey] = useState<string | null>(null);
+
+  // ✅ Load API key from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('gemini_api_key');
+      if (savedKey) {
+        setUserApiKey(savedKey);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,14 +77,23 @@ export default function UsernameForm({
     setError(null);
     setRoastData(null);
     setShowShareOptions(false);
+    onLoadingChange?.(true);
     
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      
+      // ✅ Prepare headers with user's API key if available
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (userApiKey) {
+        headers['x-user-api-key'] = userApiKey;
+      }
+      
       const response = await fetch(`${apiUrl}/roast/${username}?temperature=${temperature}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
       
       if (!response.ok) {
@@ -79,6 +105,27 @@ export default function UsernameForm({
           errorMessage = errorData.message || errorData.error?.message || errorMessage;
         } catch {
           errorMessage = errorText || errorMessage;
+        }
+        
+        // ✅ Detect rate limit errors and show API key modal
+        if (
+          errorMessage.includes('RATE_LIMIT_EXCEEDED') || 
+          errorMessage.includes('rate limit') ||
+          errorMessage.includes('quota exceeded') ||
+          errorMessage.includes('Too many requests') ||
+          response.status === 429
+        ) {
+          setShowApiKeyModal(true);
+          throw new Error('🔑 Server API limit reached. Please use your own free Gemini API key to continue generating roasts.');
+        }
+        
+        // ✅ Detect invalid user API key
+        if (userApiKey && (
+          errorMessage.includes('API key') && 
+          (errorMessage.includes('invalid') || errorMessage.includes('expired'))
+        )) {
+          setShowApiKeyModal(true);
+          throw new Error('❌ Your API key is invalid or expired. Please update your API key.');
         }
         
         throw new Error(errorMessage);
@@ -97,7 +144,40 @@ export default function UsernameForm({
       console.error('Roast generation error:', err);
     } finally {
       setIsLoading(false);
+      onLoadingChange?.(false);
     }
+  };
+
+  // ✅ Handler for saving API key
+  const handleSaveApiKey = (apiKey: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('gemini_api_key', apiKey);
+      setUserApiKey(apiKey);
+      setShowApiKeyModal(false);
+      setError(null);
+      
+      // Show success message
+      const successMessage = '✅ API key saved! You can now generate unlimited roasts.';
+      setError(null);
+      
+      // Optionally show a success toast
+      console.log(successMessage);
+    }
+  };
+
+  // ✅ Handler for removing API key
+  const handleRemoveApiKey = () => {
+    if (typeof window !== 'undefined') {
+      if (confirm('Are you sure you want to remove your API key? You will fall back to the shared server key which has rate limits.')) {
+        localStorage.removeItem('gemini_api_key');
+        setUserApiKey(null);
+      }
+    }
+  };
+
+  // ✅ Handler for manually opening API key modal
+  const handleOpenApiKeyModal = () => {
+    setShowApiKeyModal(true);
   };
 
   const copyToClipboard = async () => {
@@ -153,7 +233,7 @@ export default function UsernameForm({
     const emailSubject = encodeURIComponent(`My GitHub Roast - ${roastData.data?.username || username}`);
     const emailBody = encodeURIComponent(
       `Check out my hilarious GitHub roast!\n\n${roastData.roast}\n\n— Generated by GitHub Roast AI`
-    );null
+    );
     window.location.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
   };
 
@@ -164,13 +244,6 @@ export default function UsernameForm({
     setError(null);
     setShowShareOptions(false);
     onRoastGenerated?.(null);
-  };
-
-  const getCreativityLabel = (temp: number) => {
-    if (temp <= 0.3) return 'Conservative';
-    if (temp <= 0.6) return 'Balanced';
-    if (temp <= 0.9) return 'Creative';
-    return 'Wild';
   };
 
   const UserAvatar = ({ user, className }: { user: any; className?: string }) => {
@@ -288,7 +361,7 @@ export default function UsernameForm({
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="animate-spin"></span> Roasting...
+                    <span className="animate-spin">⏳</span> Roasting...
                   </span>
                 ) : (
                   'Generate Roast '
@@ -296,10 +369,40 @@ export default function UsernameForm({
               </button>
             </div>
           </div>
-          
-          
         </form>
-      </div>
+
+        {userApiKey && (
+          <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <span className="text-sm text-green-700 dark:text-green-300 font-medium">
+                  Using your personal API key 
+                </span>
+              </div>
+              <button
+                onClick={handleRemoveApiKey}
+                className="text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 underline"
+              >
+                Remove Key
+              </button>
+            </div>
+          </div>
+        )}
+
+
+        {!userApiKey && (
+          <div className="mt-4">
+            <button
+              onClick={handleOpenApiKeyModal}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border-2 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors text-sm font-medium"
+            >
+              <Key className="h-4 w-4" />
+              Use Your Own API Key
+            </button>
+          </div>
+        )}
+      </div>  
 
       {/* Error Display */}
       {error && (
@@ -311,13 +414,24 @@ export default function UsernameForm({
             </h3>
           </div>
 
-          <p className="text-sm sm:text-base text-red-700 dark:text-red-400">
+          <p className="text-sm sm:text-base text-red-700 dark:text-red-400 whitespace-pre-line">
             {error}
           </p>
 
+          {/* ✅ Show "Get API Key" button if error is rate limit related */}
+          {(error.includes('rate limit') || error.includes('quota') || error.includes('API key')) && (
+            <button
+              onClick={handleOpenApiKeyModal}
+              className="mt-4 w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Key className="h-4 w-4" />
+              Get Free API Key
+            </button>
+          )}
+
           <button
             onClick={handleClear}
-            className="mt-4 w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+            className="mt-2 ml-2 w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
           >
             Try Again
           </button>
@@ -377,6 +491,9 @@ export default function UsernameForm({
                 </div>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                   Generated by {roastData.metadata?.model || 'AI'} • {new Date(roastData.metadata?.generatedAt || Date.now()).toLocaleDateString()}
+                  {roastData.metadata?.usingUserApiKey && (
+                    <span className="ml-2 text-green-600 dark:text-green-400 font-semibold">• Using your API key ✓</span>
+                  )}
                 </p>
               </div>
               <div className="flex gap-2 mt-2 md:mt-0">
@@ -471,7 +588,9 @@ export default function UsernameForm({
             
             {/* Footer Disclaimer */}
             <div className="pt-6 border-t-2 border-orange-200 dark:border-gray-700">
-              
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                <strong>Disclaimer:</strong> {roastData.metadata?.disclaimer || 'This roast is AI-generated and intended for entertainment only.'}
+              </p>
             </div>
           </div>
         </div>
@@ -492,6 +611,13 @@ export default function UsernameForm({
           </button>
         </div>
       )}
+
+      {/* ✅ API Key Modal */}
+      <ApiKeyModal
+        isOpen={showApiKeyModal}
+        onClose={() => setShowApiKeyModal(false)}
+        onSave={handleSaveApiKey}
+      />
     </div>
   );
 }
