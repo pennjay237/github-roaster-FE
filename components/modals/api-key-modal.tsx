@@ -86,7 +86,7 @@ export function ApiKeyModal({ isOpen, onClose, onSubmit }: ApiKeyModalProps) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-gray-900 dark:text-white">
-                📝 How to get your API key:
+                 How to get your API key:
               </h3>
               <button
                 onClick={copyInstructions}
@@ -162,7 +162,6 @@ export function ApiKeyModal({ isOpen, onClose, onSubmit }: ApiKeyModalProps) {
             </ol>
           </div>
 
-          {/* API Key Input Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label

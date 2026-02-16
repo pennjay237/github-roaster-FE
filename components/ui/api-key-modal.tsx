@@ -63,7 +63,7 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                 <h3 className="text-lg font-semibold mb-4">📝 How to Get Your Free API Key:</h3>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold">
                     1
                   </div>
                   <div>
@@ -72,7 +72,7 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-black hover:bg-gray-400 text-white rounded-lg transition-colors"
                     >
                       Open AI Studio <ExternalLink className="h-4 w-4" />
                     </a>
@@ -80,7 +80,7 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold">
                     2
                   </div>
                   <div>
@@ -92,7 +92,7 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold">
                     3
                   </div>
                   <div>
@@ -104,7 +104,7 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold">
                     4
                   </div>
                   <div>
@@ -116,7 +116,7 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold">
                     5
                   </div>
                   <div>
@@ -130,8 +130,8 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-1">
-                      🔒 Your Key is Safe
+                    <h4 className="font-semibold text-black dark:text-green-200 mb-1">
+                       Your Key is Safe
                     </h4>
                     <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
                       <li>✅ Stored only in your browser (not on our servers)</li>
@@ -145,9 +145,10 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
 
               <button
                 onClick={() => setStep('input')}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all"
+                className="w-full py-3 bg-gradient-to-r from-black to-black hover:from-gray-400 hover:to-gray-400
+                 text-white font-semibold rounded-xl transition-all"
               >
-                I Have My API Key - Let's Continue →
+                If you have your API Key - Let's Continue →
               </button>
             </>
           ) : (
@@ -180,9 +181,9 @@ export function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProps) {
                   <button
                     onClick={handleSave}
                     disabled={!apiKey.trim() || !apiKey.startsWith('AIza')}
-                    className="flex-1 py-3 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold rounded-xl transition-all disabled:cursor-not-allowed"
+                    className="flex-1 py-3 bg-gradient-to-r from-black to-black hover:from-gray-400 hover:to-gray-400 text-white font-semibold rounded-xl transition-all disabled:cursor-not-allowed"
                   >
-                    Save & Start Roasting 🔥
+                    Save & Start Roasting 
                   </button>
                   <button
                     onClick={onClose}
