@@ -1,0 +1,63 @@
+import { z } from 'zod';
+
+export const githubUserSchema = z.object({
+  login: z.string(),
+  id: z.number(),
+  avatar_url: z.string().url(),
+  html_url: z.string().url(),
+  name: z.string().nullable(),
+  bio: z.string().nullable(),
+  company: z.string().nullable(),
+  blog: z.string().nullable(),
+  location: z.string().nullable(),
+  email: z.string().nullable(),
+  public_repos: z.number(),
+  followers: z.number(),
+  following: z.number(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const githubRepoSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  full_name: z.string(),
+  html_url: z.string().url(),
+  description: z.string().nullable(),
+  fork: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  pushed_at: z.string(),
+  language: z.string().nullable(),
+  stargazers_count: z.number(),
+  watchers_count: z.number(),
+  forks_count: z.number(),
+  size: z.number(),
+});
+
+export const githubStatsSchema = z.object({
+  username: z.string(),
+  name: z.string().nullable(),
+  bio: z.string().nullable(),
+  avatarUrl: z.string().url(),
+  profileUrl: z.string().url(),
+  publicRepos: z.number(),
+  followers: z.number(),
+  following: z.number(),
+  accountAge: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  recentRepos: z.array(githubRepoSchema),
+  languages: z.record(z.string(), z.number()),
+  totalStars: z.number(),
+  totalForks: z.number(),
+  mostUsedLanguage: z.string().nullable(),
+  repoActivity: z.object({
+    active: z.number(),
+    inactive: z.number(),
+  }).optional(),
+  isHireable: z.boolean().optional(),
+  hasBlog: z.boolean().optional(),
+  hasEmail: z.boolean().optional(),
+  hasLocation: z.boolean().optional(),
+});

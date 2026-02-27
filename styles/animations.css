@@ -1,0 +1,118 @@
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== Utility Classes ===== */
+
+.animate-fade-in {
+  animation: fade-in 200ms ease-out;
+}
+
+.animate-fade-up {
+  animation: fade-up 250ms ease-out;
+}
+
+.animate-fade-down {
+  animation: fade-down 250ms ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 250ms ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 250ms ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 200ms ease-out;
+}
+
+/* ===== Skeleton Loading (Clean & Neutral) ===== */
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(220 14% 94%) 25%,
+    hsl(220 14% 90%) 50%,
+    hsl(220 14% 94%) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.4s ease-in-out infinite;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(220 12% 18%) 25%,
+    hsl(220 12% 22%) 50%,
+    hsl(220 12% 18%) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.4s ease-in-out infinite;
+}
